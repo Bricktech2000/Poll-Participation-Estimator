@@ -2,7 +2,7 @@ Example Poll
 
 denominator: 100
 blue values:
-62
-49
-48
-49
+62 38
+49 51
+48 52
+49 51

@@ -10,37 +10,58 @@ print('- Poll values are rounded to the nearest whole number.')
 print('')
 
 
-def float_input(query):
+def float_input(query, multiple=False):
   while True:
     number = input(query)
+
     if number == '':
       print('Number inputted is empty. Exiting.')
       return None
+
     try:
-      return float(number)
+      if not multiple: return float(number)
+      return [float(x) for x in number.split()]
     except ValueError:
       print('Please enter a valid number.')
 
-def run():
+def main():
   denom = float_input('Denominator (100 for percentages): ')
   if denom is None: return
 
-  denominator_test = 0
-  numerator_test = 0
+  participant_count = 0
+  vote_counts = None
   print('')
 
   while True:
-    value = float_input(f'Current value (out of {denom}): ')
-    if value is None: return
+    values = float_input(f'Current values (out of {denom}, separated by whitespace): ', multiple=True)
+    if values is None: return
+    if vote_counts is None: vote_counts = [0] * len(values)
+    if len(values) != len(vote_counts):
+      print('Please enter the same number of values as in the previous input.')
+      continue
 
+    # loop through possible participant counts
     while True:
-      denominator_test += 1
-      num = round(value / denom * denominator_test)
+      participant_count += 1
+      next_vote_counts = []
 
-      if round(num / denominator_test * denom) == value and num >= numerator_test:
-        numerator_test = num 
-        print(f'Estimated poll participation count: {denominator_test}')
+      # loop through the values inputted to find the next participant count to fit them all
+      for (current_value, current_vote_count) in zip(values, vote_counts):
+        # calculate the required vote count based on the denominator and participant count
+        vote_count = round(current_value / denom * participant_count)
 
+        # check whether the required vote count/participant count would yield the right percentage
+        # and make sure the new vote count is greater than the previous vote count
+        if round(vote_count / participant_count * denom) == current_value and vote_count >= current_vote_count:
+          next_vote_counts.append(vote_count)
+
+      # if all vote counts can be represented using the current participant count, set this as
+      # the new estimation and stop checking for other participant counts
+      if len(next_vote_counts) == len(values):
+        vote_counts = next_vote_counts
         break
 
-run()
+    print(f'Estimated poll participation count: {participant_count}')
+
+if __name__ == '__main__':
+  main()

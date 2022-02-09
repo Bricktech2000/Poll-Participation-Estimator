@@ -1,0 +1,7 @@
+Example Poll
+
+denominator: 100
+blue values:
+62
+49
+48

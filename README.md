@@ -1,6 +1,6 @@
 # Poll Participation Estimator
 
-A program that estimates the number of people participating on a poll based on the percentages changing over time
+_A program that estimates the number of people participating on a poll based on the percentages changing over time_
 
 ## Usage
 
